@@ -1,5 +1,11 @@
 #!/bin/bash
-
+#The script doesn't change any config to your system, only many greps :-)
+# ***yum-update manenos*
+#This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
+#The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
+#>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
+#>https://benchmarks.cisecurity.org/tools2/linux/CIS_Red_Hat_Enterprise_Linux_7_Benchmark_v1.0.0.pdf
+#All credits to https://benchmarks.cisecurity.org. <<< Thanks Good People!!!
 #help function
 usage () 
 { 
@@ -148,16 +154,9 @@ else
   :
 fi
 
-#This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
-#The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
-#>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
-#>https://benchmarks.cisecurity.org/tools2/linux/CIS_Red_Hat_Enterprise_Linux_7_Benchmark_v1.0.0.pdf
-#All credits to https://benchmarks.cisecurity.org. <<< Thanks Good People!!!
+
 echo For best results use root.** Always be root** *Evil grin* Credits, bugs, comments >>inbox2alfie@gmail.com
-
-#The script doesn't change any config to your system, only many greps :-)
-# ***yum-update manenos*
-
+echo -e "\e[00;31m%%%%% CIS-Specific checks %%%%\e[00m" |tee -a $report 2>/dev/null
 FSTAB='/etc/fstab'
 YUM_CONF='/etc/yum.conf'
 GRUB_CFG='/boot/grub2/grub.cfg'
