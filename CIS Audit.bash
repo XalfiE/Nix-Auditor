@@ -6,7 +6,7 @@ usage ()
 echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" 
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m"
 echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m"
-echo -e "\e[00;33m# GITHUB"
+echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
 echo -e "\e[00;33m# $v\e[00m\n"
 		
 echo -e "\e[00;31m#########################################################\e[00m"		
@@ -25,7 +25,7 @@ done
 echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m" |tee -a $report 2>/dev/null
 echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
-echo -e "\e[00;33m# GITHUB" |tee -a $report 2>/dev/null
+echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit" |tee -a $report 2>/dev/null
 echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null
 
 echo "Debug Info" |tee -a $report 2>/dev/null
