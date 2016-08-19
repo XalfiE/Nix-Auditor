@@ -7,7 +7,8 @@ echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m"
 echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m"
 echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
-echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin* $v\e[00m\n"
+echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin*"
+echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null
 		
 echo -e "\e[00;31m#########################################################\e[00m"		
 }
@@ -1769,7 +1770,7 @@ function main {
 
   # CIS 9.2.20 Check for presence of user .forward files
   func_wrapper user_dot_forward 
-echo -e "\e[00;33m### SCAN COMPLETE ####################################\e[00m" |tee -a $report 2>/dev/null
+echo -e "\e[00;33m### SCAN COMPLETE ####\e[00m" |tee -a $report 2>/dev/null
 }
 
 main
