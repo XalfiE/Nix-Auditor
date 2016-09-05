@@ -1,19 +1,13 @@
 #!/bin/bash
-#The script doesn't change any config to your system, only many greps :-)
-# ***yum-update manenos*
-#This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
-#The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
-#>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
-#>https://benchmarks.cisecurity.org/tools2/linux/CIS_Red_Hat_Enterprise_Linux_7_Benchmark_v1.0.0.pdf
-#All credits to https://benchmarks.cisecurity.org. <<< Thanks Good People!!!
+
 #help function
 usage () 
 { 
-echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" 
+echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" 
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m"
-echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m"
-echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
+echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m"
 echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin*"
+echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
 echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null	
 echo -e "\e[00;31m#########################################################\e[00m"		
 }
@@ -28,12 +22,12 @@ while getopts "h:k:r:e:t" option; do
  esac
 done
 
-echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
+echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m" |tee -a $report 2>/dev/null
-echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
-echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
+echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
 echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin*"
-echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null	
+echo -e "\e[00;33m# https://github.com/Alfien/CIS-Audit"
+echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null
 echo -e "\e[00;31m#########################################################\e[00m"
 
 if [ "$keyword" ]; then 
@@ -68,9 +62,9 @@ who=`whoami` |tee -a $report 2>/dev/null
 echo -e "\n" |tee -a $report 2>/dev/null
 
 echo -e "\e[00;31mScan started at:"; date |tee -a $report 2>/dev/null
-echo -e "\e[00m\n" |tee -a $report 2>/dev/null
+echo -e "\e[00;33m\n" |tee -a $report 2>/dev/null
 
-echo -e "\e[00;31m%%%%% System Information %%%%\e[00m" |tee -a $report 2>/dev/null
+echo -e "\e[00;31m%%%%% Sysinfo %%%%\e[00m" |tee -a $report 2>/dev/null
 
 #basic kernel info
 unameinfo=`uname -a 2>/dev/null`
@@ -83,7 +77,7 @@ fi
 
 procver=`cat /proc/version 2>/dev/null`
 if [ "$procver" ]; then
-  echo -e "\e[00;33mKernel information (continued):\e[00m\n$procver" |tee -a $report 2>/dev/null
+  echo -e "\e[00;33mKernel versions:\e[00m\n$procver" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
 else 
   :
@@ -92,7 +86,7 @@ fi
 #search all *-release files for version info
 release=`cat /etc/*-release 2>/dev/null`
 if [ "$release" ]; then
-  echo -e "\e[00;34mSpecific release information:\e[00m\n$release" |tee -a $report 2>/dev/null
+  echo -e "\e[00;33mSpecific release information:\e[00m\n$release" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
 else 
   :
@@ -101,18 +95,18 @@ fi
 #target hostname info
 hostnamed=`hostname 2>/dev/null`
 if [ "$hostnamed" ]; then
-  echo -e "\e[00;36mHostname:\e[00m\n$hostnamed" |tee -a $report 2>/dev/null
+  echo -e "\e[00;33mHostname:\e[00m\n$hostnamed" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
 else 
   :
 fi
 
-echo -e "\e[00;33m%%% USER/GROUP %%%\e[00m" |tee -a $report 2>/dev/null
+echo -e "\e[00;31m%%% USER/GROUP %%%\e[00m" |tee -a $report 2>/dev/null
 
 #current user details
 currusr=`id 2>/dev/null`
 if [ "$currusr" ]; then
-  echo -e "\e[00;31mCurrent user/group info:\e[00m\n$currusr" |tee -a $report 2>/dev/null
+  echo -e "\e[00;33mCurrent user/group info:\e[00m\n$currusr" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
 else 
   :
@@ -145,18 +139,30 @@ else
   :
 fi
 
-#checks to see if any hashes are stored in /etc/passwd (depreciated  *nix storage method)
+#checks to see if any hashes are stored in /etc/passwd
 hashesinpasswd=`grep -v '^[^:]*:[x]' /etc/passwd 2>/dev/null`
 if [ "$hashesinpasswd" ]; then
-  echo -e "\e[00;33mIt looks like we have password hashes in /etc/passwd!\e[00m\n$hashesinpasswd" |tee -a $report 2>/dev/null
+  echo -e "\e[00;33mPassword hashes in /etc/passwd!\e[00m\n$hashesinpasswd" |tee -a $report 2>/dev/null
   echo -e "\n" |tee -a $report 2>/dev/null
 else 
   :
 fi
 
 
+ echo -e "\e[00;33mGeneral CIS Checks start here :-)" |tee -a $report 2>/dev/null
+ echo -e "\n" |tee -a $report 2>/dev/null
+ 
+ 
+#This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
+#The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
+#>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
+#>https://benchmarks.cisecurity.org/tools2/linux/CIS_Red_Hat_Enterprise_Linux_7_Benchmark_v1.0.0.pdf
+#All credits to https://benchmarks.cisecurity.org. <<< Thanks Good People!!!
 echo For best results use root.** Always be root** *Evil grin* Credits, bugs, comments >>inbox2alfie@gmail.com
-echo -e "\e[00;31m%%%%% CIS-Specific checks %%%%\e[00m" |tee -a $report 2>/dev/null
+
+#The script doesn't change any config to your system, only many greps :-)
+# ***yum-update manenos*
+
 FSTAB='/etc/fstab'
 YUM_CONF='/etc/yum.conf'
 GRUB_CFG='/boot/grub2/grub.cfg'
@@ -1771,6 +1777,7 @@ function main {
   # CIS 9.2.20 Check for presence of user .forward files
   func_wrapper user_dot_forward 
 echo -e "\e[00;33m### SCAN COMPLETE ####\e[00m" |tee -a $report 2>/dev/null
+echo -e "\e[00;33mGo fix them, will you?" |tee -a $report 2>/dev/null
 }
 
 main
