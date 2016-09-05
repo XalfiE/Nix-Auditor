@@ -149,8 +149,7 @@ else
 fi
 
 
- echo -e "\e[00;33mGeneral CIS Checks start here :-)" |tee -a $report 2>/dev/null
- echo -e "\n" |tee -a $report 2>/dev/null
+ echo -e "\e[mGeneral CIS Checks start here :-)" |tee -a $report 2>/dev/null
  
  
 #This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
