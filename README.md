@@ -2,8 +2,9 @@
 CIS Audit made easier (RHEL, CentOS)
 
 Usage:
-./CIS Audit.bash
+1. Make it executable
+2. Execute it.
 
 
-Questions, suggestions, critique? pipe them to inbox2alfie(gmail)
+Questions, suggestions, critique? mail them to inbox2alfie(gmail)
 
