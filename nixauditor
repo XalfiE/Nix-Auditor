@@ -1,0 +1,80 @@
+CRON_DIR='/etc/cron.d'
+AT_ALLOW='/etc/at.allow'
+AT_DENY='/etc/at.deny'
+CRON_ALLOW='/etc/cron.allow'
+CRON_DENY='/etc/cron.deny'
+SSHD_CFG='/etc/ssh/sshd_config'
+SYSTEM_AUTH='/etc/pam.d/system-auth'
+PWQUAL_CNF='/etc/security/pwquality.conf'
+PASS_AUTH='/etc/pam.d/password-auth'
+PAM_SU='/etc/pam.d/su'
+GROUP='/etc/group'
+LOGIN_DEFS='/etc/login.defs'
+PASSWD='/etc/passwd'
+SHADOW='/etc/shadow'
+GSHADOW='/etc/gshadow'
+BASHRC='/etc/bashrc'
+PROF_D='/etc/profile.d'
+MOTD='/etc/motd'
+ISSUE='/etc/issue'
+ISSUE_NET='/etc/issue.net'
+BANNER_MSG='/etc/dconf/db/gdm.d/01-banner-message'
+
+function separate_partition {
+  # Test that the supplied $1 is a separate partition
+
+  local filesystem="${1}"
+  grep -q "[[:space:]]${filesystem}[[:space:]]" "${FSTAB}" || return
+}
+
+function mount_option {
+  # Test the the supplied mount option $2 is in use on the supplied filesystem $1
+
+  local filesystem="${1}"
+  local mnt_option="${2}"
+
+  grep "[[:space:]]${filesystem}[[:space:]]" "${FSTAB}" | grep -q "${mnt_option}" || return
+
+  mount | grep "[[:space:]]${filesystem}[[:space:]]" | grep -q "${mnt_option}" || return
+}
+
+function bind_mounted_to {
+  # Test that a directory /foo/dir is bind mounted onto a particular filesystem
+
+  local directory="${1}"
+  local filesystem="${2}"
+  local E_NO_MOUNT_OUTPUT=1
+
+  grep "^${filesystem}[[:space:]]" "${FSTAB}" | grep -q "${directory}" || return
+
+  local grep_mount
+  grep_mount=$(mount | grep "^${filesystem}[[:space:]]" | grep "${directory}")
+  #If $directory doesn't appear in the mount output as mounted on the $filesystem  
+  #it may appear in the output as being mounted on the same device as $filesystem, check for this
+  local fs_dev
+  local dir_dev
+  fs_dev="$(mount | grep "[[:space:]]${filesystem}[[:space:]]" | cut -d" " -f1)"
+  dir_dev="$(mount | grep "[[:space:]]${directory}[[:space:]]" | cut -d" " -f1)"
+  if [[ -z "${grep_mount}" ]] && [[ "${fs_dev}" != "${dir_dev}" ]] ; then
+    return "${E_NO_MOUNT_OUTPUT}"
+  fi
+}
+
+function test_disable_mounting {
+  # Test the the supplied filesystem type $1 is disabled
+
+  local module="${1}"
+  modprobe -n -v ${module} | grep -q "install \+/bin/true" || return 
+
+  lsmod | grep -qv "${module}" || return
+}
+
+function centos_gpg_key_installed {
+  # Test CentOS GPG Key is installed
+  local centos_off_str='gpg(CentOS-7 Key (CentOS 7 Official Signing Key) <security@centos.org>)'
+  rpm -q --queryformat "%{SUMMARY}\n" gpg-pubkey | grep -q "${centos_off_str}" || return
+}
+
+function yum_gpgcheck {
+  # Check that gpgcheck is Globally Activated
+  cut -d \# -f1 ${YUM_CONF} | grep 'gpgcheck' | grep -q 'gpgcheck=1' || return
