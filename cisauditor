@@ -7,8 +7,7 @@ echo -e "\n\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHEL 6,7... CentOS 6,7 ^\e[00m" "\e[00;31m#\e[00m"
 echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m"
 echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin*"
-echo -e "\e[00;33m# https://github.com/XalfiE/CIS-Audit"
-echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null	
+echo -e "\e[00;33m# https://github.com/XalfiE/CIS-Audit"	
 echo -e "\e[00;31m#########################################################\e[00m"		
 }
 while getopts "h:k:r:e:t" option; do
@@ -27,7 +26,6 @@ echo -e "\e[00;31m#\e[00m" "\e[00;33m Unofficial CIS Audit Script ^Tested on RHE
 echo -e "\e[00;31m%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\e[00m" |tee -a $report 2>/dev/null
 echo -e "\e[00;33m# For best results, run as ROOT. Always be ROOT. *Evil grin*"
 echo -e "\e[00;33m# https://github.com/XalfiE/CIS-Audit"
-echo -e "\e[00;33m# $version\e[00m\n" |tee -a $report 2>/dev/null
 echo -e "\e[00;31m#########################################################\e[00m"
 
 if [ "$keyword" ]; then 
@@ -148,10 +146,7 @@ else
   :
 fi
 
-
- echo -e "\e[mGeneral CIS Checks start here :-)" |tee -a $report 2>/dev/null
- 
- 
+ echo -e "\e[00;31mGeneral CIS Checks start here:\e[00m\n$lastlogedonusrs" |tee -a $report 2>/dev/null
 #This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
 #The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
 #>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
@@ -209,14 +204,13 @@ ISSUE_NET='/etc/issue.net'
 BANNER_MSG='/etc/dconf/db/gdm.d/01-banner-message'
 
 function separate_partition {
-  # Test that the supplied $1 is a separate partition
+  # Test that the supplied file system is a separate partition
 
   local filesystem="${1}"
   grep -q "[[:space:]]${filesystem}[[:space:]]" "${FSTAB}" || return
 }
 
 function mount_option {
-  # Test the the supplied mount option $2 is in use on the supplied filesystem $1
 
   local filesystem="${1}"
   local mnt_option="${2}"
@@ -224,37 +218,6 @@ function mount_option {
   grep "[[:space:]]${filesystem}[[:space:]]" "${FSTAB}" | grep -q "${mnt_option}" || return
 
   mount | grep "[[:space:]]${filesystem}[[:space:]]" | grep -q "${mnt_option}" || return
-}
-
-function bind_mounted_to {
-  # Test that a directory /foo/dir is bind mounted onto a particular filesystem
-
-  local directory="${1}"
-  local filesystem="${2}"
-  local E_NO_MOUNT_OUTPUT=1
-
-  grep "^${filesystem}[[:space:]]" "${FSTAB}" | grep -q "${directory}" || return
-
-  local grep_mount
-  grep_mount=$(mount | grep "^${filesystem}[[:space:]]" | grep "${directory}")
-  #If $directory doesn't appear in the mount output as mounted on the $filesystem  
-  #it may appear in the output as being mounted on the same device as $filesystem, check for this
-  local fs_dev
-  local dir_dev
-  fs_dev="$(mount | grep "[[:space:]]${filesystem}[[:space:]]" | cut -d" " -f1)"
-  dir_dev="$(mount | grep "[[:space:]]${directory}[[:space:]]" | cut -d" " -f1)"
-  if [[ -z "${grep_mount}" ]] && [[ "${fs_dev}" != "${dir_dev}" ]] ; then
-    return "${E_NO_MOUNT_OUTPUT}"
-  fi
-}
-
-function test_disable_mounting {
-  # Test the the supplied filesystem type $1 is disabled
-
-  local module="${1}"
-  modprobe -n -v ${module} | grep -q "install \+/bin/true" || return 
-
-  lsmod | grep -qv "${module}" || return
 }
 
 function centos_gpg_key_installed {
@@ -287,28 +250,6 @@ function rpm_installed {
   local rpm_out
   rpm_out="$(rpm -q --queryformat "%{NAME}\n" ${rpm})"
   [[ "${rpm}" = "${rpm_out}" ]] || return
-}
-
-function verify_aide_cron {
-  # Verify there is a cron job scheduled to run the aide check
-  crontab -u root -l | cut -d\# -f1 | grep -q "aide \+--check" || return
-}
-
-function verify_selinux_grubcfg {
-  # Verify SELinux is not disabled in grub.cfg file 
-
-  local grep_out1
-  grep_out1="$(grep selinux=0 ${GRUB_CFG})"
-  [[ -z "${grep_out1}" ]] || return
-
-  local grep_out2
-  grep_out2="$(grep enforcing=0 ${GRUB_CFG})"
-  [[ -z "${grep_out2}" ]] || return
-}
-
-function verify_selinux_state {
-  # Verify SELinux configured state in /etc/selinux/config
-  cut -d \# -f1 ${SELINUX_CFG} | grep 'SELINUX=' | tr -d '[[:space:]]' | grep -q 'SELINUX=enforcing' || return
 }
 
 function verify_selinux_policy {
@@ -450,15 +391,6 @@ function ip6_router_advertisements_dis {
   chk_sysctl net.ipv6.conf.all.disable_ipv6 1 && return
   chk_sysctl net.ipv6.conf.all.accept_ra 0 || return
   chk_sysctl net.ipv6.conf.default.accept_ra 0 || return
-}
-  
-function ip6_redirect_accept_dis {
-  # Check that IPv6 Redirect Acceptance is disabled
-  # If ipv6 is disabled then we don't mind what IPv6 redirect acceptance is set to
-  # If ipv6 is enabled then both settings should be set to zero
-  chk_sysctl net.ipv6.conf.all.disable_ipv6 1 && return
-  chk_sysctl net.ipv6.conf.all.accept_redirects 0 || return
-  chk_sysctl net.ipv6.conf.default.accept_redirects 0 || return
 }
 
 function chk_file_exists {
@@ -1187,9 +1119,6 @@ function main {
   # CIS 1.1.5 Test that there is a separate /var partition
   func_wrapper separate_partition /var
 
-  # CIS 1.1.6 Test that the /var/tmp directory is bind mounted onto the /tmp filesystem
-  func_wrapper bind_mounted_to /var/tmp /tmp
-
   # CIS 1.1.7 Test that there is a separate /var/log partition
   func_wrapper separate_partition /var/log
 
@@ -1201,11 +1130,7 @@ function main {
 
   # CIS 1.1.10 Test that the nodev option is on the /home partition
   func_wrapper mount_option /home nodev
-
-  # TO DO CIS 1.1.11 nodev option on removable media partitions
-  # TO DO CIS 1.1.12 noexec option on removable media partitions
-  # TO DO CIS 1.1.13 nosuid option on removable media partitions
-
+  
   # CIS 1.1.14 Test that the nodev option is on the /dev/shm partition
   func_wrapper mount_option /dev/shm nodev
 
@@ -1218,27 +1143,6 @@ function main {
   # TO DO CIS 1.1.17 Check for the sticky bit on all world writable dirs
   func_wrapper sticky_wrld_w_dirs 
 
-  # CIS 1.1.18 Test that the mounting of cramfs filesystems is disabled  
-  func_wrapper test_disable_mounting cramfs
-  
-  # CIS 1.1.19 Test that the mounting of freevxfs filesystems is disabled  
-  func_wrapper test_disable_mounting freevxfs
-
-  # CIS 1.1.20 Test that the mounting of jffs2 filesystems is disabled  
-  func_wrapper test_disable_mounting jffs2
-
-  # CIS 1.1.21 Test that the mounting of hfs filesystems is disabled  
-  func_wrapper test_disable_mounting hfs
-
-  # CIS 1.1.22 Test that the mounting of hfsplus filesystems is disabled  
-  func_wrapper test_disable_mounting hfsplus
-
-  # CIS 1.1.23 Test that the mounting of squashfs filesystems is disabled  
-  func_wrapper test_disable_mounting squashfs
-
-  # CIS 1.1.24 Test that the mounting of udf filesystems is disabled  
-  func_wrapper test_disable_mounting udf
-
   # CIS 1.2.1 Check that the CentOS GPG Key is Installed
   func_wrapper centos_gpg_key_installed
 
@@ -1250,12 +1154,6 @@ function main {
   
   # CIS 1.2.4 Verify package integrity using RPM
   func_wrapper pkg_integrity
-  
-  # CIS 1.3.1 Check that the AIDE rpm is installed
-  func_wrapper rpm_installed aide
-  
-  # CIS 1.3.2 Check periodic execution of file integrity (that aide runs from cron)
-  func_wrapper verify_aide_cron
 
   # CIS 1.4.1 Check that SELinux is not disabled in /boot/grub2/grub.cfg 
   func_wrapper verify_selinux_grubcfg
@@ -1284,13 +1182,13 @@ function main {
   # CIS 1.5.3 Check permissions on /boot/grub2/grub.cfg
   func_wrapper check_boot_pass
 
-  # TO DO CIS 1.6.1
+  # restrict_core_dumps 
   func_wrapper restrict_core_dumps 
 
   # CIS 1.6.2 Verify that the flag to force randomized virtual memory region placement is set
   func_wrapper chk_sysctl kernel.randomize_va_space 2
 
-  # TO DO CIS 1.7
+  # chk_latest_rel
   func_wrapper chk_latest_rel
 
   # CIS 2.1.1 Check telnet-server RPM is not installed
@@ -1399,10 +1297,6 @@ function main {
 
   # CIS 3.15 Check net-snmp RPM is not installed
   func_wrapper rpm_not_installed net-snmp
-
-  # CIS 3.16 MTA in local-only mode
-  # Disable for now as function requires netstat and netstat is not part of the build
-  #func_wrapper mta_local_only
 
   # CIS 4.1.1 IP Forwarding should be disabled
   func_wrapper chk_sysctl net.ipv4.ip_forward 0
