@@ -146,7 +146,7 @@ else
   :
 fi
 
- echo -e "\e[00;31mGeneral CIS Checks start here:\e[00m\n$lastlogedonusrs" |tee -a $report 2>/dev/null
+ echo -e "\e[00;31mGeneral CIS Checks start here:\e[00m\n"
 #This script will run through several checks and for each check output to the terminal 'Passed' or 'Failed'
 #The checks are designed to test whether or not the host conforms to the benchmarks in the following documents:
 #>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
