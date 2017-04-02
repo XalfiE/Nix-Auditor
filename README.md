@@ -1,4 +1,4 @@
-# CIS-Audit
+# Nix Auditor
 CIS Audit made easier (RHEL, CentOS)
 
 Usage:
