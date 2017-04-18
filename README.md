@@ -4,7 +4,5 @@ CIS Audit made easier (RHEL, CentOS)
 Usage:
 1. Make it executable
 2. Execute it.
-
-
-Questions, suggestions, critique? mail them to inbox2alfie(gmail)
+3. https://the-infosec.com/2017/03/20/auditing-linux-unix-os-in-120-seconds-flat/
 
