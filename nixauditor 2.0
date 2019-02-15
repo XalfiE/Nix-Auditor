@@ -330,7 +330,7 @@ function unconfined_procs {
   # Test for unconfined daemons
   local ps_out
   ps_out="$(ps -eZ | egrep 'initrc|unconfined' | egrep -v 'bash|ps|grep')"
-  [[ -n "${ps_out}" ]] || return
+  [[ -z "${ps_out}" ]] || return
 }
 
 function check_grub_owns {
