@@ -12,3 +12,5 @@ Change Log - Credits to Metale
 
 
 Added color variables BLUE, RED, NC (NO COLOR) and GREEN on lines 210 - 213 Applied color variables to "passed" and "failed" results in function func_wrapper on lines 1171 and - 1173
+
+If the tool has helped younin any way feel free to buy me a coffee! https://www.buymeacoffee.com/alfie
