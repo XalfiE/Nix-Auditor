@@ -157,7 +157,7 @@ fi
 #>https://benchmarks.cisecurity.org/tools2/linux/CIS_CentOS_Linux_7_Benchmark_v1.1.0.pdf
 #>https://benchmarks.cisecurity.org/tools2/linux/CIS_Red_Hat_Enterprise_Linux_7_Benchmark_v1.0.0.pdf
 #All credits to https://benchmarks.cisecurity.org. <<< Thanks Good People!!!
-echo For best results use root.** Always be root** *Evil grin* Credits, bugs, comments >>cto@the-infosec.com
+echo For best results use root.** Always be root** *Evil grin* Credits, bugs, comments
 
 #The script doesn't change any config to your system, only many greps :-)
 # ***yum-update manenos*
